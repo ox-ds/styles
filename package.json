@@ -1,0 +1,35 @@
+{
+  "name": "@ox-ds/styles",
+  "version": "1.0.0-beta",
+
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+
+  "files": [
+    "dist/index.js",
+    "dist/index.d.ts",
+    "*.css"
+  ],
+
+  "bugs": {
+    "url": "https://github.com/ox-ds/styles/issues"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ox-ds/styles.git"
+  },
+
+  "license": "MIT",
+  "author": "Josh H (https://j-o.sh)",
+  "description": "A simple, portative foundations package.",
+  "keywords": ["design-tokens", "css-variables", "ui", "spacing", "size", "grid", "shadow", "aspect-ratio", "typography"],
+  "homepage": "https://oxds.uk/foundations/styles",
+  "type": "commonjs",
+  
+  "scripts": {
+    "build": "tsc && node scripts/build-css.js",
+    "prepublishOnly": "npm run build"
+  }
+}

@@ -1,24 +1,33 @@
-import { size } from './size';
-import { getFluid } from './fluid'; // Import fluid scaling utility
+import { getFluid } from './fluid'; // Grabs our fluid scaling helper
+import { size, SizeKey } from './size';
+
+// Defines valid radius keys for type safety
+export type RadiusKey = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 
 export interface Radius {
-  [key: string]: string;
+  [key: string]: number;
 }
 
-export const radius: Radius = {
-  xs: size[1],  // "2px"
-  sm: size[2],  // "4px"
-  md: size[3],  // "8px"
-  lg: size[4],  // "12px"
-  xl: size[7],  // "32px"
-  full: size[9999]  // "9999px"
+// Radius settings for smooth corners—tied to our size system
+export const radius: Record<RadiusKey, number> = {
+  xs: size[1],   // Tiny 2px corners
+  sm: size[2],   // Small 4px curves
+  md: size[3],   // Medium 8px rounds
+  lg: size[4],   // Large 12px bends
+  xl: size[7],   // Extra-large 32px arcs
+  full: 999      // Full circle at 999px
 };
 
-export function setRadius(newRadius: Partial<Radius> = {}): void {
+// Updates the radius map at runtime if we need custom tweaks
+export function setRadius(newRadius: Partial<Record<RadiusKey, number>> = {}): void {
   Object.assign(radius, newRadius);
 }
 
-export function getFluidRadius(radiusKey: string, minPx?: number, maxPx?: number): string {
-    const basePx = parseInt(radius[radiusKey].replace('px', '')) || 2;  // Default to 2px if invalid
-    return getFluid(basePx, minPx, maxPx, 0.0625);  // Use 0.0625vw for radius (mobile 360px to desktop 1440px)
-  }
+// Gets a fluid radius—scales from half to double base, capped at 32px (static for full)
+export function getFluidRadius(radiusKey: RadiusKey, minPx?: number, maxPx?: number): string {
+  const basePx = radius[radiusKey] || 2;
+  if (radiusKey === 'full') return `${basePx}px`; // Static for full
+  const min = minPx ?? basePx * 0.5;
+  const max = maxPx ?? Math.min(basePx * 2, 32);
+  return getFluid(basePx, { type: 'radius', minPx: min, maxPx: max, scaleFactor: 0.0625 });
+}

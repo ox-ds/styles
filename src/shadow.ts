@@ -1,32 +1,22 @@
-import { getFluid } from './fluid'; // Import fluid scaling utility
+export type ShadowKey = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'overlay' | 'inset' | 'focus';
 
 export interface Shadows {
   [key: string]: string;
 }
 
-export const shadows: Shadows = {
-  xs: "0 0 0 rgba(0,0,0,0.1)",
-  sm: "0 0 0 rgba(0,0,0,0.1)",
-  md: "0 0 0 rgba(0,0,0,0.1)",
-  lg: "0 0 0 rgba(0,0,0,0.1)",
-  xl: "0 0 0 rgba(0,0,0,0.1)",
-  overlay: "0 0 0 rgba(0,0,0,0.1)",
-  inset: "0 0 0 rgba(0,0,0,0.1)",
-  focus: "0 0 0 rgba(0,0,0,0.1)"
+// Shadow options—from subtle glows to bold insets
+export const shadows: Record<ShadowKey, string> = {
+  xs: "0 1px 2px rgba(25, 24, 24, 0.1)",      // Barely-there shadow
+  sm: "0 2px 4px rgba(25, 24, 24, 0.15)",     // Small, soft touch
+  md: "0 4px 8px rgba(25, 24, 24, 0.2)",      // Medium, balanced depth
+  lg: "0 8px 16px rgba(25, 24, 24, 0.25)",    // Large, noticeable drop
+  xl: "0 16px 24px rgba(25, 24, 24, 0.3)",    // Extra chunky shadow
+  overlay: "0 0 16px rgba(25, 24, 24, 0.5)",  // Dark overlay vibe
+  inset: "inset 0 2px 4px rgba(25, 24, 24, 0.2)", // Inner shadow pop
+  focus: "0 0 0 3px rgba(25, 24, 24, 0.4)"    // Focus ring glow
 };
 
-export function setShadows(newShadows: Partial<Shadows> = {}): void {
+// Updates shadows at runtime if we need a custom look
+export function setShadows(newShadows: Partial<Record<ShadowKey, string>> = {}): void {
   Object.assign(shadows, newShadows);
-}
-
-export function getFluidShadow(shadow: string, options?: { min?: number; max?: number }): string {
-  const parts = shadow.split(' ').map(part => part.trim());
-  if (parts.length < 4) throw new Error(`Invalid shadow format: ${shadow}`);
-
-  const [hOffset, vOffset, blur, color] = parts;
-  const hBasePx = parseInt(hOffset.replace('px', '')) || 0;
-  const vBasePx = parseInt(vOffset.replace('px', '')) || 0;
-
-  const fluidVOffset = getFluid(vBasePx, options?.min, options?.max, 0.125); // ScaleFactor 0.125 for 360px–1440px
-  return `${hOffset} ${fluidVOffset} ${blur} ${color}`;
 }

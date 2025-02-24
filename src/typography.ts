@@ -1,58 +1,60 @@
-import { getFluid } from './fluid'; // Import fluid scaling utility
+import { getFluid } from './fluid';
+
+export type FontSizeKey = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+export type LineHeightKey = 'tight' | 'normal' | 'loose';
+export type FontFamilyKey = 'sans' | 'serif' | 'mono';
 
 export interface Typography {
-
-  fontSizes: {
-    [key: string]: string;
-  };
-
-  lineHeights: {
-    [key: string]: string;
-  };
-
-  fontFamilies: {
-    [key: string]: string;
-  };
-
-  base: string;
+  fontSizes: { [key in FontSizeKey]: number };
+  lineHeights: { [key in LineHeightKey]: number };
+  fontFamilies: { [key in FontFamilyKey]: string };
+  base: number;
 }
 
 export const typography: Typography = {
-    fontSizes: {
-      xs: "12px",
-      sm: "14px",
-      md: "16px",
-      lg: "18px",
-      xl: "24px",
-      xxl: "32px",
-    },
-    lineHeights: {
-      tight: "19.2px",
-      normal: "24px",
-      loose: "28.8px",
-    },
-    fontFamilies: {
-      sans: "'Arial', 'Helvetica', sans-serif",
-      serif: "'Times New Roman', serif",
-      mono: "'Courier New', monospace",
-    },
-    base: "16px",
-  };
+  fontSizes: { xs: 12, sm: 14, md: 16, lg: 18, xl: 24, xxl: 32 },
+  lineHeights: { tight: 19.2, normal: 24, loose: 28.8 },
+  fontFamilies: {
+    sans: "'Arial', 'Helvetica', sans-serif",
+    serif: "'Times New Roman', serif",
+    mono: "'Courier New', monospace"
+  },
+  base: 16
+};
 
 export function setTypography(newTypography: Partial<Typography> = {}): void {
   Object.assign(typography, newTypography);
 }
 
-export function getFluidFontSize(sizeKey: string, options?: { min?: number; max?: number }): string {
-    const basePx = parseInt(typography.fontSizes[sizeKey].replace('px', '')) || 12; // Default to 12px if invalid
-    const fluidPx = getFluid(basePx, options?.min, options?.max, 0.125); // ScaleFactor 0.125 for 360px–1440px
-    const fluidRem = parseFloat(fluidPx.replace('px', '')) / parseInt(typography.base.replace('px', '')); // Convert back to REM
-    return `${fluidRem.toFixed(3)}rem`; // Round to 3 decimals for precision
-  }
+export function getFluidFontSize(
+  sizeKey: FontSizeKey,
+  lineHeightKey: LineHeightKey,
+  options?: { min?: number; max?: number }
+): string {
+  const basePx = typography.fontSizes[sizeKey] || 12;
+  const baseLineHeightPx = typography.lineHeights[lineHeightKey] || 19.2;
+  const minPx = options?.min ?? basePx * 0.5;
+  const maxPx = options?.max ?? Math.min(basePx * 2, baseLineHeightPx / 1.2);
+  const fluidClampPx = getFluid(basePx, { 
+    type: 'fontSize', 
+    minPx, 
+    maxPx, 
+    scaleFactor: 0.125
+  });
+  return fluidClampPx
+    .replace(/(\d*\.?\d+)px/g, (match, p1) => `${(parseFloat(p1) / typography.base).toFixed(3)}rem`);
+}
 
-  export function getFluidLineHeight(heightKey: string, options?: { min?: number; max?: number }): string {
-    const basePx = parseFloat(typography.lineHeights[heightKey].replace('px', '')) || 19.2; // Default to 19.2px (1.2 * 16px) if invalid
-    const fluidPx = getFluid(basePx, options?.min, options?.max, 0.015); // ScaleFactor 0.015 for line heights (finer scaling)
-    const fluidRem = parseFloat(fluidPx.replace('px', '')) / parseInt(typography.base.replace('px', '')); // Convert back to REM
-    return `${fluidRem.toFixed(1)}rem`; // Round to 1 decimal for readability
-  }
+export function getFluidLineHeight(heightKey: LineHeightKey, options?: { min?: number; max?: number }): string {
+  const basePx = typography.lineHeights[heightKey] || 19.2;
+  const minPx = options?.min ?? basePx * 0.8;
+  const maxPx = options?.max ?? Math.min(basePx * 1.2, 64);
+  const fluidClampPx = getFluid(basePx, { 
+    type: 'lineHeight', 
+    minPx, 
+    maxPx, 
+    scaleFactor: 0.125
+  });
+  return fluidClampPx
+    .replace(/(\d*\.?\d+)px/g, (match, p1) => `${(parseFloat(p1) / typography.base).toFixed(1)}rem`);
+}

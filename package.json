@@ -12,6 +12,15 @@
     "*.css"
   ],
 
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./*.css": "./*.css"
+  },
+
   "bugs": {
     "url": "https://github.com/ox-ds/styles/issues"
   },
@@ -31,5 +40,10 @@
   "scripts": {
     "build": "tsc && node scripts/build-css.js",
     "prepublishOnly": "npm run build"
-  }
+  },
+
+  "devDependencies": {
+  "typescript": "^5.7.3",
+  "@types/node": "^20.11.30"
+}
 }

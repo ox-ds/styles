@@ -19,24 +19,24 @@ export interface Typography {
 
 export const typography: Typography = {
     fontSizes: {
-      xs: "12px",  // 12px / 16px = 0.75rem, extra-small text for captions, mobile density
-      sm: "14px", // 14px / 16px = 0.875rem, small text for labels, accessibility
-      md: "16px",     // 16px / 16px = 1rem, medium text for body, default readable size
-      lg: "18px", // 18px / 16px = 1.125rem, large text for headings, tablets
-      xl: "24px",   // 24px / 16px = 1.5rem, extra-large text for titles, desktops
-      xxl: "32px",    // 32px / 16px = 2rem, double-extra-large text for hero text, 4K/Ultrawide
+      xs: "12px",
+      sm: "14px",
+      md: "16px",
+      lg: "18px",
+      xl: "24px",
+      xxl: "32px",
     },
     lineHeights: {
-      tight: "19.2px", // Compact line height for dense text, mobile
-      normal: "24px", // Standard line height for body, accessibility
-      loose: "28.8px", // Spacious line height for headings, desktops
+      tight: "19.2px",
+      normal: "24px",
+      loose: "28.8px",
     },
     fontFamilies: {
-      sans: "'Arial', 'Helvetica', sans-serif", // Sans-serif for modern, readable text
-      serif: "'Times New Roman', serif",        // Serif for traditional, formal text
-      mono: "'Courier New', monospace",         // Monospace for code, technical content
+      sans: "'Arial', 'Helvetica', sans-serif",
+      serif: "'Times New Roman', serif",
+      mono: "'Courier New', monospace",
     },
-    base: "16px", // Default base font size for REM calculations, 2025 standard
+    base: "16px",
   };
 
 export function setTypography(newTypography: Partial<Typography> = {}): void {
